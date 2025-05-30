@@ -13,7 +13,8 @@ function CropPredict() {
             crop:'',
             N:'',
             P:'',
-            K:''
+            K:'',
+            location: ''
         })
     const [predictedFertilizer, setPredictedFertilizer] = useState(null);
     const [fertilizerContent, setFertilizerContent] = useState(null);
@@ -49,11 +50,15 @@ function CropPredict() {
         
         const prompt = `
           Generate only an **HTML-formatted** snippet (no markdown or code blocks) with the following sections for the crop: ${predictedFertilizer}.
-
+          My location is ${formData.location}.
 - The Fertilizer name at the top as a green <h1> heading with class "text-green-300".
 - Use <h2> for section titles: "Brief Description", "Best Farming Practices", "Fun Facts and Tips".
 - Provide paragraphs (<p>) and bullet points (<ul><li>) where appropriate.
 - Use <br> tags only for line breaks inside paragraphs.
+- Use 2 <br> tags only for line breaks inside paragraphs, use 2 after a heading or ':', and 1 br tag before a heading.
+- Format text sizez so it looks nice
+- use green-300 for headings to give color contrast
+- Along with fertilizer also give the natural alternative to it
 - Do NOT include any triple backticks (''') or markdown formatting in the response.
 - Return only the raw HTML snippet.
 - IMPORTANT: Do NOT include any markdown syntax, backticks, or code blocks.
@@ -124,10 +129,11 @@ Example output for "Kidney Beans":
             </div>
         </div>
         
-        <div className='grid grid-cols-2 gap-5'>
+        <div className='grid grid-cols-2 gap-5 mt-5'>
             <div className='flex flex-col'>
                 <p className='text-white font-medium flex'> <GiFertilizerBag className='mt-1'/> Soil Type</p>
                <select placeholder='0-100' name='soil' value={formData.soil} onChange={handleChange} className='bg-[#98989880] p-2 backdrop-blur-2xl rounded placeholder-white text-white w-full mt-2' style={{border:"0.5px solid #FFFFFF80"}}>
+                     <option value="" disabled hidden> Select Soil Type</option>
                      <option value='1'>Black</option>
                      <option value="2">Clay</option>
                      <option value="3">Loamy</option>
@@ -138,6 +144,8 @@ Example output for "Kidney Beans":
             <div className='flex flex-col'>
                 <p className='text-white font-medium flex'> <FaWheatAwn className='mt-1 mr-1' />Crop Type</p>
                 <select name='crop' placeholder='0-100' value={formData.crop} onChange={handleChange} className='bg-[#98989880] p-2 backdrop-blur-2xl rounded placeholder-white text-white w-full mt-2' style={{border:"0.5px solid #FFFFFF80"}}>
+                     
+                     <option value="" disabled hidden> Select Crop Type</option>
                      <option value="1">Barley</option>
                      <option value="2">Cotton</option>
                      <option value="3">Groundnuts</option>
@@ -154,8 +162,8 @@ Example output for "Kidney Beans":
         </div>
 
         <div>
-            <p className='text-white font-medium flex'> <IoLocationSharp className='mt-1'/> Location</p>
-            <input type='number' placeholder='0-50' className='bg-[#98989880] p-2 backdrop-blur-2xl w-full rounded placeholder-white text-white mt-2' style={{border:"0.5px solid #FFFFFF80"}}></input>
+            <p className='text-white font-medium mt-5 flex'> <IoLocationSharp className='mt-1'/> Location</p>
+            <input type='text' name="location" value={formData.location} onChange={handleChange} placeholder='0-50' className='bg-[#98989880] p-2 backdrop-blur-2xl w-full rounded placeholder-white text-white mt-2' style={{border:"0.5px solid #FFFFFF80"}}></input>
         </div>
 
         <button type="submit" className='flex justify-center items-center bg-green-500 text-xl p-2 rounded font-semibold mt-2 hover:bg-green-400 text-white'><BsGraphUp />Predict Crop Stats</button>

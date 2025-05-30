@@ -12,38 +12,115 @@ export default function Weather() {
     const [data, setData] = useState(null);
     const [coords, setCoords] = useState({ lat: null, lon: null });
     const [doFetch,setDoFetch]= useState(false);
+    const [description, setDescription] = useState('');
+    const [loadingDescription, setLoadingDescription] = useState(false);
+    const [city, setCity] = useState('');
+
 
     
     useEffect(() => {
-        const getLocation = async () => {
-            try {
-              const position = await new Promise((resolve, reject) => {
-                navigator.geolocation.getCurrentPosition(resolve, reject);
-              });
-          
-              setCoords({
-                lat: await position.coords.latitude,
-                lon: await position.coords.longitude,
-              });
-            } catch (error) {
-              console.error('Error getting location:', error);
-            }
-        };
         const fetchWeather = async () => {
             try {
                 const response = await axios.get('https://api.openweathermap.org/data/2.5/weather', {
-                  params: {lat: 26.9136, lon: 75.7858, appid: import.meta.env.VITE_WEATHER_API_KEY, units: 'metric',},});
+                    params: {
+                        lat: 26.9136,
+                        lon: 75.7858,
+                        appid: import.meta.env.VITE_WEATHER_API_KEY,
+                        units: 'metric',
+                    },
+                });
                 setData(response.data);
-                console.log('Weather data Hourly:', response.data);
-            }catch (error) {
-                console.error('Error fetching weather:', error);}};
+                console.log('Weather data:', response.data);
+            } catch (error) {
+                console.error('Error fetching weather:', error);
+            }
+        };
+        fetchWeather();
+    }, []);
 
-    if (navigator.geolocation) {getLocation();} 
-    else {console.error('Geolocation is not supported by this browser.');}
-    if(!doFetch){fetchWeather(); setDoFetch(true);}
+    const fetchWeatherByCity = async () => {
+  if (!city) return;
 
-    },[])
+  const coords = await getCoordsFromCity(city);
+  if (!coords) return;
 
+  try {
+    const response = await axios.get('https://api.openweathermap.org/data/2.5/weather', {
+      params: {
+        lat: coords.lat,
+        lon: coords.lon,
+        appid: import.meta.env.VITE_WEATHER_API_KEY,
+        units: 'metric',
+      },
+    });
+    setData(response.data);
+  } catch (error) {
+    console.error('Error fetching weather:', error);
+  }
+};
+
+    useEffect(() => {
+        const generateDescription = async () => {
+            if (!data) return;
+            setLoadingDescription(true);
+            const prompt = `Generate a short weather description using the json ${data}. it consists of dense weather info, understad it and give me a description along the following guidelines:
+                Using this weather data:
+                - Temperature: 37.69°C
+                - Humidity: 24%
+                - Wind: 3.58 km/h
+                - Air Pressure: 993 hPa
+                - Condition: Overcast
+
+                Give me a structured weather summary for farmers, divided into:
+                1. General Weather
+                2. Detailed Weather
+                3. Insights for Farmers (use short bullet points)
+                4. Recommendations (use short bullet points)
+                5. Use 2 <br> tags whenever one is necessary to put it in a HTML format
+                6. Format text sizez so it looks nice
+
+                IMPORTANT: Do not include markdown symbols, no **bold**, no *italics*. Keep it as simple plain text for direct display.
+                `;
+            try {
+                const response = await axios.post(
+                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`,
+                    { contents: [{ parts: [{ text: prompt }] }] },
+                    { headers: { 'Content-Type': 'application/json' } }
+                );
+                const reply = response.data.candidates[0]?.content?.parts[0]?.text || 'No description available.';
+                setDescription(reply);
+            } catch (error) {
+                console.error('Error generating description:', error);
+                setDescription('Sorry, unable to generate weather description.');
+            } finally {
+                setLoadingDescription(false);
+            }
+        };
+        generateDescription();
+    }, [data]);
+
+    const getCoordsFromCity = async (cityName) => {
+  try {
+    const geoRes = await axios.get('http://api.openweathermap.org/geo/1.0/direct', {
+      params: {
+        q: cityName,
+        limit: 1,
+        appid: import.meta.env.VITE_WEATHER_API_KEY,
+      },
+    });
+
+    if (geoRes.data.length === 0) {
+      alert('City not found');
+      return null;
+    }
+
+    const { lat, lon } = geoRes.data[0];
+    return { lat, lon };
+  } catch (error) {
+    console.error('Error fetching geocoding data:', error);
+    return null;
+  }
+};
 
 
     
@@ -59,15 +136,15 @@ export default function Weather() {
         <p className="text-center text-green-600">Real-time weather data and AI-powered agricultural insights</p>
 
         <div className="flex justify-center items-center space-x-2 bg-[#000000c4] backdrop-blur-2xl p-5 rounded-lg shadow-2xl">
-          <input className="border-green-400 bg-[#6c6c6c] focus:outline-none focus:border-black p-2 border rounded w-full text-white placeholder-white" placeholder="Enter your city" />
-          <button className="px-4 py-2 bg-green-500 text-white rounded flex"> <IoMdSearch className='mt-1 mr-1'/> Search</button>
+          <input className="border-green-400 bg-[#6c6c6c] focus:outline-none focus:border-black p-2 border rounded w-full text-white placeholder-white" placeholder="Enter your city" value={city} onChange={(e) => setCity(e.target.value)} />
+          <button className="px-4 py-2 bg-green-500 text-white rounded flex" onClick={fetchWeatherByCity}> <IoMdSearch className='mt-1 mr-1'/> Search</button>
         </div>
 
         <div className='w-full flex gap-5 h-[37vh]'>
             <div>
-            <div className="flex flex-col gap-4 h-full mt-8">
+            <div className="flex flex-col gap-4 h-full mt-8 w-2xl">
             <div className="bg-[#000000c4] backdrop-blur-2xl rounded-lg shadow-2xl p-4 md:col-span-2">
-                <h2 className="text-3xl font-semibold text-green-400 mb-2 flex"><IoSunnyOutline className='mt-1 mr-1 text-orange-400'/> Current Conditions</h2>
+                <h2 className="text-3xl font-semibold text-green-400 mb-2 flex"><IoSunnyOutline className='mt-1 mr-1 text-orange-400'/> Current Conditions {city? '':'(Default)'}</h2>
                 <div className='flex justify-around'>
                     <div>
                         <div className="text-4xl font-bold mt-5 text-green-400">{data? `${data.main.temp}`: 'unavailable'}°C</div>
@@ -97,9 +174,9 @@ export default function Weather() {
                         </div>
                 </div>
             </div>
-            <div className="bg-[#000000c4] backdrop-blur-2xl rounded-lg shadow-2xl p-4 w-2xl">
-            <h2 className="text-xl font-semibold text-green-400 mb-4">7-Day Forecast</h2>
-            <div className="space-y-2">
+            {/* <div className="bg-[#000000c4] backdrop-blur-2xl rounded-lg shadow-2xl p-4 w-2xl">
+            <h2 className="text-xl font-semibold text-green-400 mb-4">7-Day Forecast</h2> */}
+            {/* <div className="space-y-2">
                 <div className="flex justify-between items-center bg-green-50 p-2 rounded">
                 <div className="flex items-center gap-2">☀️ Today <span className="text-green-600">Sunny</span></div>
                 <div className="flex space-x-4 text-sm">
@@ -116,9 +193,9 @@ export default function Weather() {
                     <span>10%</span>
                 </div>
                 </div>
-                {/* Add more days similarly */}
-            </div>
-            </div>
+
+            </div> */}
+            {/* </div> */}
             </div>
             </div>
          
@@ -126,22 +203,22 @@ export default function Weather() {
          
          
             <div className='w-1/2 h-full shadow-2xl mt-8'>
-            <div className="bg-[#000000c4] backdrop-blur-2xl rounded-lg shadow-2xl p-4 h-full flex flex-col">
-            <h2 className="text-xl font-semibold text-green-400 mb-2">Weather Assistant</h2>
-            <div className="border p-2 rounded text-green-400 mb-2 overflow-y-auto flex-1">
-              Hi! I can help you with weather forecasts and agricultural advice. Ask me about tomorrow's weather or farming conditions!
-            </div>
-            <div className="flex space-x-2 mt-2">
-              <input className="flex-1 p-2 border border-green-300 rounded placeholder-white" placeholder="Ask about weather..." />
-              <button className="px-4 py-2 bg-green-500 text-white rounded">Send</button>
-            </div>
+                        <div className="bg-[#000000c4] backdrop-blur-2xl rounded-lg shadow-2xl p-4 h-full flex flex-col">
+                            <h2 className="text-xl font-semibold text-green-400 mb-2">AI Weather Summary</h2>
+                            <div
+  className="border border-[#fff3] p-2 rounded text-white mb-2 overflow-y-auto flex-1"
+  dangerouslySetInnerHTML={{ __html: loadingDescription ? 'Generating summary...' : description }}
+/>
+
+                        </div>
+                    </div>
             </div>
             </div>
         
         </div>
       </div>
-      </div>
-      </div>
+     
+
       
   );
 }

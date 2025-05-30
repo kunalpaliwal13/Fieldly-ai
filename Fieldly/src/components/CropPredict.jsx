@@ -9,14 +9,16 @@ import axios from 'axios';
 
 function CropPredict() {
     const [formData, setFormData] = useState({
-        nitro:'',
-        phosphorus:'',
-        potassium:'',
+        N:'',
+        P:'',
+        K:'',
         temp:'',
-        humidity:''
+        humidity:'',
+        location: ''
     })
     const [predictedCrop, setPredictedCrop]= useState(null);
     const [cropContent, setCropContent]= useState(null);
+    const [loadingDescription, setLoadingDescription] = useState(false);
 
     const handleChange = (e) => {
       const { name, value } = e.target;
@@ -45,14 +47,16 @@ function CropPredict() {
     }, [predictedCrop]);
 
     const getResponse= async ()=>{
-        
+        setLoadingDescription(true);
         const prompt = `
           Generate only an **HTML-formatted** snippet (no markdown or code blocks) with the following sections for the crop: ${predictedCrop}.
-
+          My location is ${formData.location}
 - The crop name at the top as a green <h1> heading with class "text-green-300".
 - Use <h2> for section titles: "Brief Description", "Best Farming Practices", "Fun Facts and Tips".
 - Provide paragraphs (<p>) and bullet points (<ul><li>) where appropriate.
-- Use <br> tags only for line breaks inside paragraphs.
+- Use 2 <br> tags only for line breaks inside paragraphs, use 2 after a heading or ':', and 1 br tag before a heading.
+- Format text sizez so it looks nice
+- use green-300 for headings to give color contrast
 - Do NOT include any triple backticks (''') or markdown formatting in the response.
 - Return only the raw HTML snippet.
 - IMPORTANT: Do NOT include any markdown syntax, backticks, or code blocks.
@@ -91,6 +95,7 @@ Example output for "Kidney Beans":
   .trim();
         setCropContent(cleanedHtml);
         console.log(reply)
+        setLoadingDescription(false);
         }catch(error){console.log(error);}
 
     }
@@ -125,7 +130,7 @@ Example output for "Kidney Beans":
             </div>
         </div>
         
-        <div className='grid grid-cols-2 gap-5'>
+        <div className='grid grid-cols-2 mt-5 gap-5'>
             <div className='flex flex-col'>
                 <p className='text-white font-medium flex'> <FaThermometerHalf className='mt-1'/> Temperature (°C)</p>
                 <input type='number' placeholder='0-50' name='temp' value={formData.temp} onChange={handleChange} className='bg-[#98989880] p-2 backdrop-blur-2xl rounded placeholder-white text-white mt-2' style={{border:"0.5px solid #FFFFFF80"}}></input>
@@ -137,8 +142,8 @@ Example output for "Kidney Beans":
         </div>
 
         <div>
-            <p className='text-white font-medium flex'> <IoLocationSharp className='mt-1'/> Location</p>
-            <input type='number' placeholder='0-50' className='bg-[#98989880] p-2 backdrop-blur-2xl w-full rounded placeholder-white text-white mt-2' style={{border:"0.5px solid #FFFFFF80"}}></input>
+            <p className='text-white font-medium mt-5 flex'> <IoLocationSharp className='mt-1'/> Location</p>
+            <input type='text' placeholder='Add your location' className='bg-[#98989880] p-2 backdrop-blur-2xl w-full rounded placeholder-white text-white mt-2' style={{border:"0.5px solid #FFFFFF80"}}></input>
         </div>
 
         <button type="submit" className='flex justify-center items-center bg-green-500 text-xl p-2 rounded font-semibold mt-2 hover:bg-green-400 text-white'><BsGraphUp />Predict Crop Stats</button>
@@ -147,20 +152,24 @@ Example output for "Kidney Beans":
      
     <div className="bg-[#000000cc] backdrop-blur-2xl px-8 py-5 w-2xl justify-center items-start rounded-md mt-14 block
  gap-5 overflow-y-auto max-h-96 shrink-0">
+  <div className='text-white p-6 rounded-2xl'>
   {!cropContent ? (
     <>
-      <h1 className='text-white flex items-center'>
+      <h1 className='flex items-center'>
         <GrSun className='mt-1 mr-1' />
         Ready to Predict
       </h1>
-      <p className='text-green-300'>
+      <p className='text-green-300 mt-2'>
         Fill in your farm details and click predict to get AI-powered insights
       </p>
     </>
+  ) : loadingDescription ? (
+    <p>Generating summary...</p>
   ) : (
-    <div className='text-white p-6 rounded-2xl' dangerouslySetInnerHTML={{ __html: cropContent }}>
-    </div>
+    <div dangerouslySetInnerHTML={{ __html: cropContent }} />
   )}
+</div>
+
 </div>
 
     </div>
