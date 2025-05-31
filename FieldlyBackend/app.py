@@ -15,6 +15,16 @@ def load_model(modelfile):
     return loaded_model
 
 
+@app.route('/startup', methods=['POST', 'GET'])
+def startup():
+    try:
+        print("start")
+        return 'start'
+    except Exception as e:
+        return str(e)
+
+
+
 @app.route('/predict_fertilizer', methods=['POST', 'GET'])
 def predict_another():
     try:
