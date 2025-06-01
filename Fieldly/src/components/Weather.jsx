@@ -101,7 +101,7 @@ export default function Weather() {
 
     const getCoordsFromCity = async (cityName) => {
   try {
-    const geoRes = await axios.get('http://api.openweathermap.org/geo/1.0/direct', {
+    const geoRes = await axios.get('https://api.openweathermap.org/geo/1.0/direct', {
       params: {
         q: cityName,
         limit: 1,
