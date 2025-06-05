@@ -14,9 +14,11 @@ function App() {
         console.log("startup " + response);
       }catch(error){console.log(error)}
     }
+    if (!sessionStorage.getItem('backendStarted')) {
     startBackend();
-    alert("The backend is starting up, it might take 1 minute or two.")
-
+    alert("The backend is starting up, it might take 1 minute or two.");
+    sessionStorage.setItem('backendStarted', 'true');
+  }
   }, [])
   
 
