@@ -15,6 +15,10 @@ function App() {
       }catch(error){console.log(error)}
     }
     startBackend();
+    useEffect(() => {
+    alert("The backend is starting up, it might take 1 minute or two.")
+}, [])
+
   }, [])
   
 
