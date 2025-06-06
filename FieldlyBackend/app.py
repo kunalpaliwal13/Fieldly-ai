@@ -54,7 +54,7 @@ def predict_another():
 def predict():
     try:
         # collection = create_collection_mongo()
-        loaded_model = load_model('Models/finalized_model.pkl')
+        # loaded_model = load_model('Models/finalized_model.pkl')
         scaler = pickle.load(open('Models/finalized_scaler.pkl', 'rb'))
 
         session = ort.InferenceSession("Models/finalized_model.onnx")
