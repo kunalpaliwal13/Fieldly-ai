@@ -29,7 +29,7 @@ function CropPredict() {
         console.log(formData);
 
         try {
-          const res = await axios.post('https://fieldly-ai.onrender.com/predict', formData, {
+          const res = await axios.post('http://127.0.0.1:5000/predict', formData, {
                 headers: {
                 'Content-Type': 'application/json',
                 },
