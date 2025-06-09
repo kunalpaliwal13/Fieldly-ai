@@ -20,7 +20,6 @@ def load_model(modelfile):
 @app.route('/startup', methods=['POST', 'GET'])
 def startup():
     try:
-        print("start")
         return 'start'
     except Exception as e:
         return str(e)
@@ -87,5 +86,5 @@ def predict():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, use_reloader=True)
+    app.run(debug=False, host="0.0.0.0")
 
