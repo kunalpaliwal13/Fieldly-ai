@@ -25,6 +25,7 @@ function CropPredict() {
       setFormData((prev) => ({...prev, [name]: value,}));};
 
     const handleSubmit = async (e) => {
+        setLoadingDescription(true);
         e.preventDefault();
         console.log(formData);
 
@@ -47,7 +48,7 @@ function CropPredict() {
     }, [predictedCrop]);
 
     const getResponse= async ()=>{
-        setLoadingDescription(true);
+        
         const prompt = `
           Generate only an **HTML-formatted** snippet (no markdown or code blocks) with the following sections for the crop: ${predictedCrop}.
           My location is ${formData.location}
@@ -93,9 +94,10 @@ Example output for "Kidney Beans":
   .replace(/<\/?html>/g, '')      // remove html tags if any
   .replace(/<\/?body>/g, '')      // remove body tags if any
   .trim();
+        setLoadingDescription(false);
+        console.log("false");
         setCropContent(cleanedHtml);
         console.log(reply)
-        setLoadingDescription(false);
         }catch(error){console.log(error);}
 
     }
@@ -103,30 +105,30 @@ Example output for "Kidney Beans":
 
   return (
     <>
-    <div className='bg-[url("/bg.jpg")] bg-cover bg-center h-screen relative'>
-    <div className='bg-[#ffffffab] h-screen'>
+    <div className='bg-[url("/bg.jpg")] bg-cover bg-center h-screen relative overflow-auto'>
+    <div className='bg-[#ffffffab] h-screen overflow-auto max-w-screen'>
     <Navbar/>
-    <div className='w-screen flex flex-col justify-center items-center'>
+    <div className='md:w-screen flex flex-col justify-center items-center'>
 
     <h1 className='text-5xl mt-15 text-green-900 font-extrabold '> Crop Prediction </h1>
-    <p className='text-xl text-green-700 font-normal mt-5'>Get AI-powered insights for optimal crop selection and yield prediction</p>
+    <p className='text-xl text-green-700 font-normal mt-5 px-4 flex items-center justify-center text-center'>Get AI-powered insights for optimal crop selection and yield prediction</p>
     
-    <div className='grid-cols-2 grid gap-10'>
+    <div className='md:grid-cols-2 md:grid md:gap-10 block max-w-screen p-5' >
      <div className="bg-[#000000c4] backdrop-blur-2xl p-8 rounded-md mt-14 flex flex-col gap-5">
         
         <form onSubmit={handleSubmit}>
-        <div className='grid grid-cols-3 gap-7'>
+        <div className='grid md:grid-cols-3 gap-7'>
             <div className='flex flex-col'>
                 <p className='text-white font-medium'>Nitrogen(N)</p>
-                <input type='number' placeholder='0-100'  name='N' value={formData.N} onChange={handleChange} className='bg-[#98989880] p-2 backdrop-blur-2xl rounded placeholder-white text-white w-30 mt-2' style={{border:"0.5px solid #FFFFFF80"}}></input>
+                <input type='number' placeholder='0-100'  name='N' value={formData.N} onChange={handleChange} className='bg-[#98989880] p-2 backdrop-blur-2xl rounded placeholder-white text-white md:w-30 mt-2 w-full' style={{border:"0.5px solid #FFFFFF80"}}></input>
             </div>
             <div className='flex flex-col'>
                 <p className='text-white font-medium'>Phosphorus(P)</p>
-                <input type='number' name='P' value={formData.P} onChange={handleChange} placeholder='0-100' className='bg-[#98989880] p-2 backdrop-blur-2xl rounded placeholder-white text-white w-30 mt-2' style={{border:"0.5px solid #FFFFFF80"}}></input>
+                <input type='number' name='P' value={formData.P} onChange={handleChange} placeholder='0-100' className='bg-[#98989880] p-2 backdrop-blur-2xl rounded placeholder-white text-white md:w-30 w-full mt-2' style={{border:"0.5px solid #FFFFFF80"}}></input>
             </div>
             <div className='flex flex-col'>
                 <p className='text-white font-medium'>Potassium(K)</p>
-                <input type='number' placeholder='0-100' name='K' value={formData.K} onChange={handleChange} className='bg-[#98989880] p-2 backdrop-blur-2xl rounded placeholder-white text-white w-30 mt-2' style={{border:"0.5px solid #FFFFFF80"}}></input>
+                <input type='number' placeholder='0-100' name='K' value={formData.K} onChange={handleChange} className='bg-[#98989880] p-2 backdrop-blur-2xl rounded placeholder-white text-white md:w-30 w-full mt-2' style={{border:"0.5px solid #FFFFFF80"}}></input>
             </div>
         </div>
         
@@ -150,24 +152,26 @@ Example output for "Kidney Beans":
         </form>
      </div>
      
-    <div className="bg-[#000000cc] backdrop-blur-2xl px-8 py-5 w-2xl justify-center items-start rounded-md mt-14 block
+    <div className="bg-[#000000cc]  backdrop-blur-2xl px-8 py-5 md:w-2xl justify-center md:max-w-full items-start rounded-md mt-14 block 
  gap-5 overflow-y-auto max-h-96 shrink-0">
   <div className='text-white p-6 rounded-2xl'>
-  {!cropContent ? (
-    <>
-      <h1 className='flex items-center'>
-        <GrSun className='mt-1 mr-1' />
-        Ready to Predict
-      </h1>
-      <p className='text-green-300 mt-2'>
-        Fill in your farm details and click predict to get AI-powered insights
-      </p>
-    </>
-  ) : loadingDescription ? (
-    <p>Generating summary...</p>
-  ) : (
-    <div dangerouslySetInnerHTML={{ __html: cropContent }} />
-  )}
+  {loadingDescription ? (<>
+  <p className='text-green-300 mt-2'>Please wait</p>
+  <p>Generating summary...</p></>
+) : cropContent ? (
+  <div dangerouslySetInnerHTML={{ __html: cropContent }} />
+) : (
+  <>
+    <h1 className='flex items-center'>
+      <GrSun className='mt-1 mr-1' />
+      Ready to Predict
+    </h1>
+    <p className='text-green-300 mt-2'>
+      Fill in your farm details and click predict to get AI-powered insights
+    </p>
+  </>
+)}
+
 </div>
 
 </div>

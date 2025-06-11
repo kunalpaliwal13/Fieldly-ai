@@ -14,12 +14,12 @@ function CTASection() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
-            <button 
+            <a href="crop-predict" 
               className="bg-gradient-to-r flex from-green-500 to-green-500 hover:from-green-600 hover:to-green-700 text-white text-lg px-12 py-4 rounded-full font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl group"
             >
               Get Started Now
               <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 mt-1 transition-transform" />
-            </button>
+            </a>
             <button 
               variant="outline"
               className="border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white text-lg px-8 py-4 rounded-full font-medium transition-all duration-300"

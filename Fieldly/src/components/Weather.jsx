@@ -127,53 +127,68 @@ export default function Weather() {
 
 
   return (
-    <div className='bg-[url("/bg.jpg")] bg-cover bg-center h-screen relative'>
-    <div className='bg-[#ffffffab] h-screen'>
+    <div className='bg-[url("/bg.jpg")] bg-cover bg-center h-screen relative overflow-auto'>
+    <div className='bg-[#ffffffab] h-screen overflow-auto'>
         <Navbar></Navbar>
         
       <div className="max-w-7xl mt-13 mx-auto space-y-6">
         <h1 className="text-4xl font-bold text-center text-green-700">Weather Intelligence</h1>
         <p className="text-center text-green-600">Real-time weather data and AI-powered agricultural insights</p>
 
-        <div className="flex justify-center items-center space-x-2 bg-[#000000c4] backdrop-blur-2xl p-5 rounded-lg shadow-2xl">
+        <div className="flex justify-center items-center space-x-2 bg-[#000000c4] backdrop-blur-2xl p-5 rounded-lg shadow-2xl mx-5 md:mx-0">
           <input className="border-green-400 bg-[#6c6c6c] focus:outline-none focus:border-black p-2 border rounded w-full text-white placeholder-white" placeholder="Enter your city" value={city} onChange={(e) => setCity(e.target.value)} />
           <button className="px-4 py-2 bg-green-500 text-white rounded flex" onClick={fetchWeatherByCity}> <IoMdSearch className='mt-1 mr-1'/> Search</button>
         </div>
 
-        <div className='w-full flex gap-5 h-[37vh]'>
-            <div>
-            <div className="flex flex-col gap-4 h-full mt-8 w-2xl">
+        <div className='w-full md:flex  gap-5 h-[37vh]'>
+            <div className="flex flex-col gap-4 h-full mt-8 px-5 md:p-0 md:w-2xl">
             <div className="bg-[#000000c4] backdrop-blur-2xl rounded-lg shadow-2xl p-4 md:col-span-2">
-                <h2 className="text-3xl font-semibold text-green-400 mb-2 flex"><IoSunnyOutline className='mt-1 mr-1 text-orange-400'/> Current Conditions {city? '':'(Default)'}</h2>
-                <div className='flex justify-around'>
-                    <div>
-                        <div className="text-4xl font-bold mt-5 text-green-400">{data? `${data.main.temp}`: 'unavailable'}°C</div>
-                        <span className="text-green-300">Sunny</span>
-                    </div>
+                  <h2 className="md:text-3xl text-xl font-semibold text-green-400 mb-2 flex"><IoSunnyOutline className='mt-1 mr-1 text-orange-400'/> Current Conditions {city? '':'(Default)'}</h2>
+                  <div className='md:flex justify-around'>
+                      <div className='mb-5 md:block flex justify-center items-center md:mb-10'>
+                          <div className="md:text-4xl text-2xl font-bold mt-5 text-white">{data? `${data.main.temp}`: 'unavailable'}°C</div>
+                          <span className="text-white">Sunny</span>
+                      </div>
 
-                        <div className="flex flex-col items-center mt-4">
-                            <div className='flex flex-col items-center justify-center text-white'>
-                                <div className='text-blue-300 text-3xl'><BsDropletFill /></div>
-                                <div className='font-semibold text-xl text-white'>{data? `${data.main.humidity}`: 'unavailable'}%</div>
-                                Humidity
-                            </div>    
+                      <div className=' flex gap-10'>
+                          <div className="flex flex-col items-center mt-4">
+                              <div className='flex flex-col items-center justify-center text-white'>
+                                  <div className='text-blue-300 text-3xl'><BsDropletFill /></div>
+                                  <div className='font-semibold text-xl text-white'>{data? `${data.main.humidity}`: 'unavailable'}%</div>
+                                  Humidity
+                              </div>    
+                          </div>
+                          <div className="flex flex-col items-center mt-4">
+                              <div className='flex flex-col items-center justify-center text-white'>
+                                  <div className='text-purple-300 text-3xl'><FaWind /></div>
+                                  <div className='font-semibold text-xl text-white'>{data? `${data.wind.speed}`: 'unavailable'} Km/h</div>
+                                  Wind Speed
+                              </div>    
+                          </div>
+                          <div className="flex flex-col items-center mt-4">
+                              <div className='flex flex-col items-center justify-center text-white'>
+                                  <div className='text-blue-300 text-3xl'><RiTailwindCssFill /></div>
+                                  <div className='font-semibold text-xl text-white'>{data? `${data.main.pressure}`: 'unavailable'}</div>
+                                  Air Pressure
+                              </div>    
+                          </div>
                         </div>
-                        <div className="flex flex-col items-center mt-4">
-                            <div className='flex flex-col items-center justify-center text-white'>
-                                <div className='text-purple-300 text-3xl'><FaWind /></div>
-                                <div className='font-semibold text-xl text-white'>{data? `${data.wind.speed}`: 'unavailable'} Km/h</div>
-                                Wind Speed
-                            </div>    
-                        </div>
-                        <div className="flex flex-col items-center mt-4">
-                            <div className='flex flex-col items-center justify-center text-white'>
-                                <div className='text-blue-300 text-3xl'><RiTailwindCssFill /></div>
-                                <div className='font-semibold text-xl text-white'>{data? `${data.main.pressure}`: 'unavailable'}</div>
-                                Air Pressure
-                            </div>    
-                        </div>
+                  </div>
                 </div>
             </div>
+              <div className='md:w-1/2 h-full shadow-2xl md:mt-8 mx-5 md:mx-0 pb-5 md:pb-0'>
+                  <div className="bg-[#000000c4] backdrop-blur-2xl rounded-lg shadow-2xl p-4 h-full flex flex-col">
+                      <h2 className="text-xl font-semibold text-green-400 mb-2">AI Weather Summary</h2>
+                      <div className="border border-[#fff3] p-2 rounded text-white mb-2 overflow-y-auto flex-1" dangerouslySetInnerHTML={{ __html: loadingDescription ? 'Generating summary...' : description }}/>
+                  </div>
+              </div>
+            </div>
+              
+            </div>
+        
+        </div>
+         
+         
             {/* <div className="bg-[#000000c4] backdrop-blur-2xl rounded-lg shadow-2xl p-4 w-2xl">
             <h2 className="text-xl font-semibold text-green-400 mb-4">7-Day Forecast</h2> */}
             {/* <div className="space-y-2">
@@ -196,26 +211,8 @@ export default function Weather() {
 
             </div> */}
             {/* </div> */}
-            </div>
-            </div>
          
-         
-         
-         
-            <div className='w-1/2 h-full shadow-2xl mt-8'>
-                        <div className="bg-[#000000c4] backdrop-blur-2xl rounded-lg shadow-2xl p-4 h-full flex flex-col">
-                            <h2 className="text-xl font-semibold text-green-400 mb-2">AI Weather Summary</h2>
-                            <div
-  className="border border-[#fff3] p-2 rounded text-white mb-2 overflow-y-auto flex-1"
-  dangerouslySetInnerHTML={{ __html: loadingDescription ? 'Generating summary...' : description }}
-/>
-
-                        </div>
-                    </div>
-            </div>
-            </div>
-        
-        </div>
+              
       </div>
      
 

@@ -18,6 +18,7 @@ function CropPredict() {
         })
     const [predictedFertilizer, setPredictedFertilizer] = useState(null);
     const [fertilizerContent, setFertilizerContent] = useState(null);
+    const [loadingDescription, setLoadingDescription] = useState(false);
 
     const handleChange = (e) => {
       const { name, value } = e.target;
@@ -26,7 +27,7 @@ function CropPredict() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(formData);
-
+        setLoadingDescription(true);
         try {
           const res = await axios.post('https://fieldly-ai.onrender.com/predict_fertilizer', formData, {
                 headers: {
@@ -97,35 +98,36 @@ Example output for "Kidney Beans":
   .trim();
         setFertilizerContent(cleanedHtml);
         console.log(reply)
+        setLoadingDescription(false);
         }catch(error){console.log(error);}
 
     }
 
   return (
     <>
-    <div className='bg-[url("/bg.jpg")] bg-cover bg-center h-screen relative'>
-    <div className='bg-[#ffffffab] h-screen'>
+     <div className='bg-[url("/bg.jpg")] bg-cover bg-center h-screen relative overflow-auto'>
+    <div className='bg-[#ffffffab] h-screen overflow-auto max-w-screen'>
     <Navbar/>
-    <div className='w-screen flex flex-col justify-center items-center'>
+    <div className='md:w-screen flex flex-col justify-center items-center'>
 
-    <h1 className='text-5xl mt-15 text-green-900 font-extrabold '> Fertilizer Prediction </h1>
-    <p className='text-xl text-green-700 font-normal mt-5'>Get AI-powered insights for optimal Fertilizer selection and best yield</p>
+    <h1 className='text-5xl mt-15 text-green-900 font-extrabold  flex justify-center items-center text-center'> Fertilizer Prediction </h1>
+    <p className='text-xl text-green-700 flex justify-center items-center text-center px-4 font-normal mt-5'>Get AI-powered insights for optimal Fertilizer selection and best yield</p>
     
-    <div className='grid-cols-2 grid gap-10'>
-     <div className="bg-[#000000c4] backdrop-blur-2xl p-8 rounded-md mt-10 flex flex-col gap-5">
+    <div className='md:grid-cols-2 md:grid gap-10 max-w-full p-5'>
+     <div className="bg-[#000000c4] backdrop-blur-2xl p-8 rounded-md  mt-10 flex flex-col gap-5">
         <form onSubmit={handleSubmit}>
-        <div className='grid grid-cols-3 gap-7'>
+        <div className='grid md:grid-cols-3 gap-7'>
             <div className='flex flex-col'>
                 <p className='text-white font-medium'>Nitrogen(N)</p>
-                <input type='number' placeholder='0-100' name='N' value={formData.N} onChange={handleChange} className='bg-[#98989880] p-2 backdrop-blur-2xl rounded placeholder-white text-white w-30 mt-2' style={{border:"0.5px solid #FFFFFF80"}}></input>
+                <input type='number' placeholder='0-100' name='N' value={formData.N} onChange={handleChange} className='bg-[#98989880] p-2 backdrop-blur-2xl rounded placeholder-white text-white md:w-30 mt-2' style={{border:"0.5px solid #FFFFFF80"}}></input>
             </div>
             <div className='flex flex-col'>
                 <p className='text-white font-medium'>Phosphorus(P)</p>
-                <input type='number' placeholder='0-100' name='P' value={formData.P} onChange={handleChange} className='bg-[#98989880] p-2 backdrop-blur-2xl rounded placeholder-white text-white w-30 mt-2' style={{border:"0.5px solid #FFFFFF80"}}></input>
+                <input type='number' placeholder='0-100' name='P' value={formData.P} onChange={handleChange} className='bg-[#98989880] p-2 backdrop-blur-2xl rounded placeholder-white text-white md:w-30 mt-2' style={{border:"0.5px solid #FFFFFF80"}}></input>
             </div>
             <div className='flex flex-col'>
                 <p className='text-white font-medium'>Potassium(K)</p>
-                <input type='number' placeholder='0-100' name='K' value={formData.K} onChange={handleChange} className='bg-[#98989880] p-2 backdrop-blur-2xl rounded placeholder-white text-white w-30 mt-2' style={{border:"0.5px solid #FFFFFF80"}}></input>
+                <input type='number' placeholder='0-100' name='K' value={formData.K} onChange={handleChange} className='bg-[#98989880] p-2 backdrop-blur-2xl rounded placeholder-white text-white md:w-30 mt-2' style={{border:"0.5px solid #FFFFFF80"}}></input>
             </div>
         </div>
         
@@ -163,16 +165,16 @@ Example output for "Kidney Beans":
 
         <div>
             <p className='text-white font-medium mt-5 flex'> <IoLocationSharp className='mt-1'/> Location</p>
-            <input type='text' name="location" value={formData.location} onChange={handleChange} placeholder='0-50' className='bg-[#98989880] p-2 backdrop-blur-2xl w-full rounded placeholder-white text-white mt-2' style={{border:"0.5px solid #FFFFFF80"}}></input>
+            <input type='text' name="location" value={formData.location} onChange={handleChange} placeholder='Enter your city' className='bg-[#98989880] p-2 backdrop-blur-2xl w-full rounded placeholder-white text-white mt-2' style={{border:"0.5px solid #FFFFFF80"}}></input>
         </div>
 
         <button type="submit" className='flex justify-center items-center bg-green-500 text-xl p-2 rounded font-semibold mt-2 hover:bg-green-400 text-white'><BsGraphUp />Predict Crop Stats</button>
         </form>
      </div>
      
-     <div className="bg-[#000000cc] backdrop-blur-2xl px-8 py-5 w-2xl justify-center items-start rounded-md mt-10 block
+     <div className="bg-[#000000cc] backdrop-blur-2xl px-8 py-5 md:w-2xl justify-center items-start  rounded-md mt-10 block
      gap-5 overflow-y-auto max-h-96 shrink-0">
-      {!fertilizerContent ? (
+      {/* {!fertilizerContent ? (
         <>
           <h1 className='text-white flex items-center'>
             <GrSun className='mt-1 mr-1' />
@@ -185,6 +187,23 @@ Example output for "Kidney Beans":
       ) : (
         <div className='text-white p-6 rounded-2xl' dangerouslySetInnerHTML={{ __html: fertilizerContent }}>
         </div>
+      )} */}
+
+      {loadingDescription ? (<>
+        <p className='text-green-300 mt-2'>Please wait</p>
+        <p className='text-white'>Generating summary...</p></>
+      ) : fertilizerContent ? (
+        <div className="text-white" dangerouslySetInnerHTML={{ __html: fertilizerContent }} />
+      ) : (
+        <>
+          <h1 className='flex items-center text-white'>
+            <GrSun className='mt-1 mr-1 text-white' />
+            Ready to Predict
+          </h1>
+          <p className='text-green-300 mt-2'>
+            Fill in your farm details and click predict to get AI-powered insights
+          </p>
+        </>
       )}
     </div>
     </div>
