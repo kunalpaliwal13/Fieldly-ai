@@ -29,7 +29,7 @@ function CropPredict() {
         console.log(formData);
         setLoadingDescription(true);
         try {
-          const res = await axios.post('https://fieldly-ai.onrender.com/predict_fertilizer', formData, {
+          const res = await axios.post('https://fieldly-ai-srhi.onrender.com/predict_fertilizer', formData, {
                 headers: {
                 'Content-Type': 'application/json',
                 },
