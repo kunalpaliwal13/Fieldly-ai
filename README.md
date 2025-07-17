@@ -5,6 +5,9 @@ Live link: https://fieldly-ai.vercel.app/
 
 **Fieldly** is a full-stack web application combining a **React (Vite)** frontend and a **Flask** backend, designed to provide a fast, modern, and scalable project.
 
+<img width="1903" height="849" alt="image" src="https://github.com/user-attachments/assets/8d77432b-b978-479e-b351-c45dfc8353d4" />
+
+
 ## 📂 Project Structure
 ```
 /Fieldly
