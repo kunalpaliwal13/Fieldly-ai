@@ -1,0 +1,46 @@
+[33mcommit 305b853e52b9316fd739610f867dc2750b0abd12[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: kunalpaliwal13 <kunalpaliwal2003@gmail.com>
+Date:   Tue Jul 15 13:57:15 2025 +0530
+
+    render stable
+
+[1mdiff --git a/Fieldly/src/components/CropPredict.jsx b/Fieldly/src/components/CropPredict.jsx[m
+[1mindex 84b8a44..90a8bab 100644[m
+[1m--- a/Fieldly/src/components/CropPredict.jsx[m
+[1m+++ b/Fieldly/src/components/CropPredict.jsx[m
+[36m@@ -30,7 +30,7 @@[m [mfunction CropPredict() {[m
+         console.log(formData);[m
+ [m
+         try {[m
+[31m-          const res = await axios.post('https://fieldly-ai.onrender.com/predict', formData, {[m
+[32m+[m[32m          const res = await axios.post('https://fieldly-ai-v5e3.onrender.com/predict', formData, {[m
+                 headers: {[m
+                 'Content-Type': 'application/json',[m
+                 },[m
+[1mdiff --git a/Fieldly/src/components/FertilizerPredict.jsx b/Fieldly/src/components/FertilizerPredict.jsx[m
+[1mindex d01236b..cd0137c 100644[m
+[1m--- a/Fieldly/src/components/FertilizerPredict.jsx[m
+[1m+++ b/Fieldly/src/components/FertilizerPredict.jsx[m
+[36m@@ -29,7 +29,7 @@[m [mfunction CropPredict() {[m
+         console.log(formData);[m
+         setLoadingDescription(true);[m
+         try {[m
+[31m-          const res = await axios.post('https://fieldly-ai.onrender.com/predict_fertilizer', formData, {[m
+[32m+[m[32m          const res = await axios.post('https://fieldly-ai-v5e3.onrender.com/predict_fertilizer', formData, {[m
+                 headers: {[m
+                 'Content-Type': 'application/json',[m
+                 },[m
+[1mdiff --git a/README.md b/README.md[m
+[1mindex 002c2f0..a634b77 100644[m
+[1m--- a/README.md[m
+[1m+++ b/README.md[m
+[36m@@ -70,7 +70,7 @@[m [mThe server will start at: http://127.0.0.1:5000[m
+ To ensure the React frontend correctly communicates with the Flask backend, you need to update the Axios requests in the **Crop Prediction** and **Fertilizer** components.[m
+ change [m
+ ```[m
+[31m-axios.post('https://fieldly-ai.onrender.com/predict')[m
+[32m+[m[32maxios.post('https://fieldly-ai-v5e3.onrender.com/predict')[m[41m
+[m
+ ```[m
+ to [m
+ ```[m

@@ -19,10 +19,7 @@ def load_model(modelfile):
 
 @app.route('/startup', methods=['POST', 'GET'])
 def startup():
-    try:
         return 'start'
-    except Exception as e:
-        return str(e)
 
 
 

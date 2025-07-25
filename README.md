@@ -70,7 +70,7 @@ The server will start at: http://127.0.0.1:5000
 To ensure the React frontend correctly communicates with the Flask backend, you need to update the Axios requests in the **Crop Prediction** and **Fertilizer** components.
 change 
 ```
-axios.post('https://fieldly-ai-srhi.onrender.com/predict')
+axios.post('https://fieldly-ai-v5e3.onrender.com/predict')
 ```
 to 
 ```
